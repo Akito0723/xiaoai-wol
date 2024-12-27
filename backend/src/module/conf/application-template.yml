@@ -1,0 +1,22 @@
+server:
+  port: 5835
+
+platform:
+  type: 'bemfa'
+  bemfa:
+    broker: bemfa.com
+    port: 9501
+    tls_port: 9503
+    # 巴法平台的主题名/设备名
+    topic:
+    # 巴法平台控制台获取的私钥
+    private_key:
+  diandeng:
+
+wol_target:
+  mac_address:
+  host:
+  broadcast_ip:
+
+log:
+  debug_enable: false

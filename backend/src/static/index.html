@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" >
+    <link rel="stylesheet" href="/css/element-ui.css">
+    <title></title>
+</head>
+<style>
+    .el-container {
+        height:calc(100vh - 20px);
+    }
+    .el-row {
+        margin-bottom: 20px;
+        &:last-child {
+            margin-bottom: 0;
+        }
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .el-col {
+        flex: 1;
+    }
+    .el-header {
+        font-size: 40px;
+        font-family: SimSun,serif;
+        background: linear-gradient(to right, #00f, rgba(128, 0, 128, 0.8), rgba(255, 102, 204, 0.8));
+        border-radius: 15px 15px 15px 15px;
+        font-weight: bold;
+        color: white;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    .el-main {
+        height: 100%;
+        width: 100%;
+        align-items: stretch;
+    }
+    .el-footer {
+        font-size: 12px;
+        font-family: SimSun,serif;
+        color: #999999;
+        text-align: center;
+    }
+    .grid-content {
+        min-height: 36px;
+        height: 100%;
+    }
+    .el-collapse-item__header {
+        background: linear-gradient(to right, #00f, rgba(128, 0, 128, 0.8), rgba(255, 102, 204, 0.8));
+        font-size: 17px;
+        font-weight: bold;
+        color: white;
+        padding-left: 20px;
+        border-radius: 15px 15px 0 0;
+    }
+    .el-collapse-item__wrap {
+        padding: 25px 20px;
+        border-radius: 0 0 15px 15px;
+        border-bottom: none;
+    }
+    .el-form-item__content {
+        float: right
+    }
+    .el-icon-error {
+        color: red;
+    }
+    .scrollable {
+        overflow: auto;
+        max-height: 300px;
+    }
+    .log {
+        display: flex;
+        align-items: center;
+        line-height: 1.5em;
+        border-bottom: 1px solid;
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+        gap: 5rem;
+        :last-child {
+            border-bottom: 0;
+        }
+        /*div {*/
+        /*    margin-right: 20px;*/
+        /*}*/
+
+    }
+</style>
+<body style="background-color: #F5F5F5;">
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-row :gutter="20" >
+                <el-col :span="6">
+                    <div style="display: flex; align-items: center;">xiaomi-wol</div>
+                </el-col>
+            </el-row>
+        </el-header>
+        <el-main>
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <div class="grid-content">
+                        <el-collapse value="">
+                            <el-collapse-item title="日志" name="1">
+                                <div class="scrollable" >
+                                    <div v-for="i in formatLog" :key="i.index" class="log" :style="{color: typeColor(i.type)}">
+                                        <div >{{ i.type }}</div>
+                                        <div>{{ i.date }}</div>
+                                        <div>{{ i.content }}</div>
+                                    </div>
+                                </div>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </el-col>
+
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <el-collapse value="1">
+                        <el-collapse-item title="平台设置" name="1">
+                                <el-form ref="form" :model="platformConfig" @submit.native.prevent>
+                                    <el-form-item label="平台">
+                                        <el-select v-model="platformConfig.type" size="small" placeholder="请选择平台">
+                                          <el-option label="巴法云" value="bemfa"></el-option>
+                                          <el-option label="点灯科技" value="diandeng"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <div v-if="platformConfig.type == 'bemfa'">
+                                        <el-form-item label="服务器地址">
+                                            <el-input v-model.trim="platformConfig.bemfa.broker"
+                                                      :disabled="true" size="small" ></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="普通端口">
+                                            <el-input v-model.trim="platformConfig.bemfa.port"
+                                                      :disabled="true" size="small" ></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="用户私钥">
+                                            <el-input v-model.trim="platformConfig.bemfa.private_key"
+                                                      style="width: 270px"
+                                                      auto-complete="false" size="small" ></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="主题">
+                                            <el-input v-model.trim="platformConfig.bemfa.topic"
+                                                      auto-complete="false" size="small" ></el-input>
+                                        </el-form-item>
+                                    </div>
+                                    <div v-if="platformConfig.type == 'diandeng'">
+                                        <el-empty description="暂不支持"></el-empty>
+                                    </div>
+                                </el-form>
+                          </el-collapse-item>
+                    </el-collapse>
+                </el-col>
+                <el-col :span="8">
+                    <div class="grid-content">
+                        <el-collapse value="1">
+                            <el-collapse-item title="wol唤醒设置" name="1">
+                                <el-form ref="form" :model="wolTargetConfig" @submit.native.prevent>
+                                    <el-form-item label="客户端IP">
+                                        <el-input v-model.trim="wolTargetConfig.host" @change="onHostChange"
+                                                  size="small"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="客户端MAC">
+                                        <el-input v-model.trim="wolTargetConfig.mac_address"
+                                                  size="small"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="广播地址">
+                                        <el-input v-model.trim="wolTargetConfig.broadcast_ip"
+                                                  :disabled="true" size="small"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </el-col>
+                <el-col :span="8">
+                    <div class="grid-content">
+                        <el-collapse value="1">
+                            <el-collapse-item title="平台状态" name="1">
+                                <el-form ref="form" :model="wolTargetConfig" @submit.native.prevent>
+                                    <el-form-item label="版本">
+                                        <span>{{status.version}}</span>
+                                    </el-form-item>
+                                    <el-form-item label="MQTT设备云监听">
+                                        <div>
+                                            <i v-if="status.is_running" class="el-icon-success" style="color: green">运行中</i>
+                                            <i v-if="!status.is_running" class="el-icon-error" style="color: red">未运行</i>
+                                        </div>
+                                    </el-form-item>
+                                </el-form>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20" style="justify-content: flex-end">
+                <el-button type="info" size="medium" style="width: 120px" @click="resetClick()">取消</el-button>
+                <el-button type="primary" size="medium" style="width: 120px" @click="applyClick()" :loading="restart_loading">应用</el-button>
+            </el-row>
+        </el-main>
+
+        <el-footer height="14px">
+        </el-footer>
+    </el-container>
+</div>
+</body>
+<script src="/js/vue@2.js"></script>
+<script src="/js/element-ui.js"></script>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script>
+    const MACRegex= new RegExp("^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$");
+    const HostReg = new RegExp("^(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)$");
+
+    let v = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                platformConfig: {
+                    type: 'bemfa',
+                    bemfa: {
+                        broker: 'bemfa.com',
+                        port: '9501',
+                        private_key: null,
+                        topic: null
+                    }
+                },
+                wolTargetConfig: {
+                    host: null,
+                    mac_address: null,
+                    broadcast_ip: null
+                },
+                status: {
+                    version: ''
+                },
+                formatLog: [],
+                restart_loading: false
+            }
+        },
+        created() {
+            this.getConfig();
+        },
+        mounted() {
+            this.autoRefreshStatus();
+            this.autoRefreshLog();
+        },
+        methods: {
+            getConfig() {
+                var vm = this;
+                return new Promise((resolve, reject) => {
+                    $.get('/api/v1/config/getConfig', {}, function(res) {
+                        if (res.code === "0000") {
+                            var content = res.content
+                            vm.platformConfig = content['platform']
+                            vm.wolTargetConfig = content['wol_target']
+                            resolve();
+                        } else {
+                            vm.$message({
+                                showClose: true,
+                                message: res.msg,
+                                type: 'error',
+                                duration: 0
+                            });
+                            reject();
+                        }
+                    });
+                });
+            },
+            getStatus(data) {
+                var vm = this;
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '/api/v1/program/status',
+                        type: 'GET',
+                        data: data,
+                        success: function(res) {
+                            if (res.code === "0000") {
+                                vm.status = res.content;
+                                resolve();
+                            }
+                        },
+                    });
+                });
+            },
+            getLog() {
+                var vm = this;
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '/api/v1/log',
+                        type: 'GET',
+                        success: function(res) {
+                            const list = res
+                                .trim()
+                                .split('\n')
+                                .filter((i) => i !== '');
+                            const startIndex = list.findIndex((i) => /Version/.test(i));
+
+                            vm.formatLog = list.slice(startIndex === -1 ? 0 : startIndex).map((i, index) => {
+                                const date = i.match(/\[\d+-\d+-\d+\ \d+:\d+:\d+\]/)?.[0] || '';
+                                const type = i.match(/(INFO)|(WARNING)|(ERROR)|(DEBUG)/)?.[0] || '';
+                                const content = i.replace(date, '').replace(`${type}:`, '').trim();
+
+                                return {
+                                    index,
+                                    date,
+                                    type,
+                                    content,
+                                };
+                            });
+                            resolve();
+                        },
+                    });
+                });
+            },
+            async autoRefreshStatus() {
+                var vm = this;
+                var data = {
+                    'immediately': false
+                };
+                if (this.status.version === '' || this.status.version === undefined) {
+                    data = {
+                        'immediately': true
+                    };
+                }
+                await this.getStatus(data);
+                setTimeout(this.autoRefreshStatus, 1000);
+            },
+            async autoRefreshLog() {
+                await this.getLog();
+                setTimeout(this.autoRefreshLog, 10000);
+            },
+            applyClick() {
+                var vm = this;
+                if (!HostReg.test(this.wolTargetConfig.host)) {
+                    vm.$message({
+                        showClose: true,
+                        message: "客户端IP不合法",
+                        type: 'error',
+                        duration: 0
+                    });
+                    return false;
+                }
+
+
+                if (this.wolTargetConfig.mac_address !== null && !MACRegex.test(this.wolTargetConfig.mac_address)) {
+                    vm.$message({
+                        showClose: true,
+                        message: "客户端MAC不合法",
+                        type: 'error',
+                        duration: 0
+                    });
+                    return false;
+                }
+                $.post({
+                    url: '/api/v1/config/saveConfig',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        'platform': vm.platformConfig,
+                        'wol_target': vm.wolTargetConfig
+                    }),
+                    success: function(res) {
+                        if (res.code === "0000") {
+                            vm.$message({
+                                showClose: true,
+                                message: res.msg,
+                                duration: 0
+                            });
+                            // 刷新页面配置
+                            vm.getConfig()
+                            // 获取能否启动
+                            vm.getStatus({ 'immediately': true }).then(() => {
+                                if (vm.status.can_run) {
+                                    vm.reStartProgram();
+                                }
+                            })
+                        } else {
+                            vm.$message({
+                                showClose: true,
+                                message: res.msg,
+                                type: 'error',
+                                duration: 0
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        vm.$message({
+                            showClose: true,
+                            message: '请求失败:', error,
+                            type: 'error',
+                            duration: 0
+                        });
+                    }
+                });
+            },
+            resetClick() {
+                this.getConfig();
+            },
+            reStartProgram() {
+                this.restart_loading = true
+                var vm = this;
+                $.get('/api/v1/program/reStart',{},function(res) {
+                    vm.restart_loading = false
+                    if (res.code !== "0000") {
+                        vm.$message({
+                            showClose: true,
+                            message: '服务重启失败,原因"' + res.msg,
+                            type: 'error',
+                            duration: 0
+                        });
+                    }
+                })
+            },
+            typeColor(type) {
+                const M = {
+                    INFO: '#4e3c94',
+                    WARNING: '#A76E18',
+                    ERROR: '#C70E0E',
+                    DEBUG: '#A0A0A0',
+                };
+                return M[type];
+            },
+            onHostChange() {
+                if (this.wolTargetConfig.host === null || this.wolTargetConfig.host === '' || this.wolTargetConfig.host === undefined) {
+                    this.wolTargetConfig.broadcast_ip = null
+                    return;
+                }
+                if (!HostReg.test(this.wolTargetConfig.host)) {
+                    this.wolTargetConfig.broadcast_ip = null
+                    return;
+                }
+                var host_arr = this.wolTargetConfig.host.split('.')
+                host_arr[3] = '255'
+                this.wolTargetConfig.broadcast_ip = host_arr.join('.')
+            }
+
+        }
+
+    })
+</script>
+</html>

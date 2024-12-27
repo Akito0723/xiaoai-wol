@@ -1,0 +1,5 @@
+.idea
+
+./backend/src/requirements-dev.txt
+./backend/src/data/
+./backend/src/test/
