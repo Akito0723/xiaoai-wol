@@ -88,7 +88,7 @@ jobs:
 
       - name: Zip app
         run: |
-          cd backend && zip -r app-v${{ needs.version-info.outputs.version }}.zip src
+          cd backend && zip -r app-${{ needs.version-info.outputs.version }}.zip src
 
       - name: Generate Release info
         id: release-info
@@ -110,6 +110,6 @@ jobs:
           prerelease: ${{ steps.release-info.outputs.pre_release == 'true' }}
           fail_on_unmatched_files: true
           files: |
-            backend/app-v${{ needs.version-info.outputs.version }}.zip
+            backend/app-${{ needs.version-info.outputs.version }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

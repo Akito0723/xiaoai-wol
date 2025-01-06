@@ -37,7 +37,8 @@ RUN set -ex && \
 
 COPY --chmod=755 ./backend/src/. .
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
-RUN echo "VERSION='${VERSION}'" > /app/module/__version__.py
+
+RUN if [ -n "$VERSION" ]; then echo "VERSION='$VERSION'" > /app/module/__version__.py; fi
 
 ENTRYPOINT ["tini", "-g", "--", "/entrypoint.sh"]
 
