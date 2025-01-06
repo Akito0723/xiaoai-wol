@@ -7,7 +7,7 @@
 ### 创建数据和配置文件夹
 ```mkdir -p ${HOME}/xiaoai-wol/data```  
 
-### 使用 Docker 部署 AutoBangumi
+### 使用 Docker 部署 xiaoai-wol
 - 复制以下命令运行即可。  
 ```shell
 docker run -d \

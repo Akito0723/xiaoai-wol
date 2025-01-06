@@ -68,6 +68,15 @@ jobs:
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
 
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: peterevans/dockerhub-description
+          short-description: ${{ github.event.repository.description }}
+          enable-url-completion: true
+
   release:
     runs-on: ubuntu-latest
     needs: [build-docker, version-info]
