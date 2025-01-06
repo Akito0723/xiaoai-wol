@@ -9,10 +9,12 @@ logger = logging.getLogger(__name__)
 
 def _message_handler(client, userdata, msg):
     _topic = msg.topic
-    _msg = str(msg.payload.decode('utf-8'))
+    _msg = str(msg.payload.decode("utf-8"))
     logger.info(f"Message handler, topic:{_topic}, message: {_msg}")
     if _msg == "on":
-        Util.wake_on_lan(config["wol_target"]["broadcast_ip"], config["wol_target"]["mac_address"])
+        Util.wake_on_lan(
+            config["wol_target"]["broadcast_ip"], config["wol_target"]["mac_address"]
+        )
         logger.info("Broadcast magic packet success.")
 
 
@@ -48,11 +50,17 @@ class BemfaClient:
             # 连接成功后订阅 topic
             self._client.subscribe(self._topic, qos=1)
         else:
-            logger.error(f"Failed to connect Bemfa Broker: {self._broker}, return code {rc}")
+            logger.error(
+                f"Failed to connect Bemfa Broker: {self._broker}, return code {rc}"
+            )
 
     def _on_subscribe(self, client, userdata, mid, granted_qos):
         self._subscribeFlag = True
-        logger.info(f"Subscribed Bemfa Broker: {self._broker} success, qos = %d" % granted_qos)
+        logger.info(
+            f"Subscribed Bemfa Broker: {self._broker} success, qos = %d" % granted_qos
+        )
 
     def _on_disconnect(self, client, userdata, reason_code, properties=None):
-        logger.info(f"Disconnect Bemfa MQTT Broker: {self._broker} with result code {reason_code}")
+        logger.info(
+            f"Disconnect Bemfa MQTT Broker: {self._broker} with result code {reason_code}"
+        )

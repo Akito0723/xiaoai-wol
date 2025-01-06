@@ -10,12 +10,12 @@ from typing import Dict
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/config", tags=["config"])
 
+
 class ScanNetworkRequest(BaseModel):
     network: str
 
-@router.get(
-    "/getConfig", response_model=APIResponse
-)
+
+@router.get("/getConfig", response_model=APIResponse)
 def getConfig():
     try:
         return gen_response(APIResponse(content=config))
@@ -23,9 +23,8 @@ def getConfig():
         logger.error("Failed to get config", exc_info=True)
         return gen_response(APIResponse(msg="操作失败。", code="9999", content=str(e)))
 
-@router.post(
-    "/saveConfig", response_model=APIResponse
-)
+
+@router.post("/saveConfig", response_model=APIResponse)
 def saveConfig(request: Dict[str, object]):
     try:
         save_config(request)
@@ -33,4 +32,3 @@ def saveConfig(request: Dict[str, object]):
     except Exception as e:
         logger.error("Failed to get config", exc_info=True)
         return gen_response(APIResponse(msg="操作失败。", code="9999", content=str(e)))
-

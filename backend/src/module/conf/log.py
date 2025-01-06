@@ -10,6 +10,7 @@ LOG_ROOT = Path("data/log")
 LOG_PATH = LOG_ROOT / "log.txt"
 STRING_IO = io.StringIO()
 
+
 def setup_logger(level: int = logging.INFO):
     handlers = []
     if config["log"]["debug_enable"]:

@@ -4,6 +4,7 @@ import threading
 from module.utils import Util
 from module.conf import config
 
+
 class ProgramStatus:
     def __init__(self):
         super().__init__()

@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from .program_api import router as program_router
 from .config_api import router as config_router
 from .log_api import router as log_router
+
 __all__ = "v1"
 
 # API 1.0

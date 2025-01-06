@@ -14,6 +14,7 @@ class PlatformClient:
     def __getClient():
         if config["platform"]["type"] == "bemfa":
             from .client.bemfa_client import BemfaClient
+
             return BemfaClient()
         else:
             logger.error(f"[PlatformClient] Unsupported platform type: {type}")
@@ -31,6 +32,3 @@ class PlatformClient:
         if self.started:
             self.client.stop()
             self.started = False
-
-
-
