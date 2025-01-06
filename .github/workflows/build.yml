@@ -100,11 +100,11 @@ jobs:
         id: release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.release-info.outputs.version }}
+          tag_name: ${{ needs.version-info.outputs.version }}
           name: ${{ steps.release-info.outputs.version }}
           body: |
             Automated release from GitHub Actions.
-            Release: ${{ needs.version-info.outputs.version }}
+            Release: ${{ steps.release-info.outputs.version }}
             sha: ${{ github.sha }}
           draft: false
           prerelease: ${{ steps.release-info.outputs.pre_release == 'true' }}
