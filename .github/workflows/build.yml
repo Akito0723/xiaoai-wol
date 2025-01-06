@@ -100,10 +100,14 @@ jobs:
         with:
           tag_name: ${{ needs.version-info.outputs.version }}
           name: ${{ steps.release-info.outputs.version }}
-          body: ${{ github.event.pull_request.body }}
+          body: |
+            Automated release from GitHub Actions.
+            Release: ${{ needs.version-info.outputs.version }}
+            sha: ${{ github.sha }}
           draft: false
           prerelease: ${{ steps.release-info.outputs.pre_release == 'true' }}
+          fail_on_unmatched_files: true
           files: |
             backend/app-v${{ needs.version-info.outputs.version }}.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
