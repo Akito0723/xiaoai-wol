@@ -15,10 +15,8 @@ venv.bak/
 .idea/
 
 # Custom
-#
-# backend
-/backend/src/data
-/backend/src/module/__version__.py
+/data
+/module/__version__.py
 
 
 

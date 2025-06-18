@@ -35,7 +35,8 @@ RUN set -ex && \
         /root/.cache \
         /tmp/*
 
-COPY --chmod=755 ./backend/src/. .
+COPY --chmod=755 ./module/. .
+COPY --chmod=755 ./static/. .
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
 RUN if [ -n "$VERSION" ]; then echo "VERSION='$VERSION'" > /app/module/__version__.py; fi
