@@ -10,7 +10,7 @@ ENV LANG="C.UTF-8" \
 
 WORKDIR /app
 
-COPY ./backend/src/requirements.txt .
+COPY ./requirements.txt .
 RUN set -ex && \
     apk add --no-cache \
         bash \
