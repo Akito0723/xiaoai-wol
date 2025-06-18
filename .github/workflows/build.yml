@@ -97,7 +97,7 @@ jobs:
 
       - name: Zip app
         run: |
-          zip -r app-${{ needs.version-info.outputs.version }}.zip src
+          zip -r app-${{ needs.version-info.outputs.version }}.zip ./
       - name: Generate Release info
         id: release-info
         run: |
