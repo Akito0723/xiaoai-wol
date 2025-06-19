@@ -1,7 +1,5 @@
 #!/bin/bash
 # shellcheck shell=bash
-# for test
-tail -f /dev/null
 
 umask ${UMASK}
 
