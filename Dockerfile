@@ -35,8 +35,8 @@ RUN set -ex && \
         /root/.cache \
         /tmp/*
 
-COPY --chmod=755 ./module/. .
-COPY --chmod=755 ./static/. .
+COPY --chmod=755 ./module ./module
+COPY --chmod=755 ./static /static
 COPY --chmod=755 ./main.py ./main.py
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
