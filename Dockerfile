@@ -35,9 +35,9 @@ RUN set -ex && \
         /root/.cache \
         /tmp/*
 
-COPY --chmod=755 ./module ./module
-COPY --chmod=755 ./static /static
-COPY --chmod=755 ./main.py ./main.py
+COPY --chmod=755 ./module /app/module
+COPY --chmod=755 ./static /app/static
+COPY --chmod=755 ./main.py /app/main.py
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
 RUN if [ -n "$VERSION" ]; then echo "VERSION='$VERSION'" > /app/module/__version__.py; fi
